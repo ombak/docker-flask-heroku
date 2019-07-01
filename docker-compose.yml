@@ -1,0 +1,7 @@
+version:3
+
+services:
+  smartapps:
+    container_name: smartapps
+    build: ./
+    volumes:
