@@ -1,7 +1,35 @@
-version:3
+version: "3"
 
 services:
-  smartapps:
-    container_name: smartapps
-    build: ./
+  web:
+    image: ujicoba04_web
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8000:8000"
     volumes:
+      - web-data:/static
+    env_file:
+      - .env
+    networks:
+      - webnet
+    command: gunicorn -w 1 -b 0.0.0.0:8000 app:app
+  nginx:
+    image: ujicoba04_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    networks:
+      - webnet
+
+volumes:
+  web-data:
+networks:
+  webnet:
